@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRC WRITTEN PDF by toybur</title>
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --bg-color: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 { color: var(--primary-color); margin-bottom: 30px; }
+        
+        .btn-box { display: flex; flex-direction: column; gap: 15px; }
+
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { background: var(--secondary-color); transform: scale(1.02); }
+
+        .section { display: none; margin-top: 20px; }
+        
+        input[type="password"], input[type="file"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .header-text {
+            font-weight: bold;
+            color: #d63031;
+            margin-bottom: 10px;
+        }
+
+        #pdfViewer {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+
+        .emoji { font-size: 24px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📚 TRC WRITTEN PDF <br><small>by toybur</small> 🛡️</h1>
+
+    <div id="mainMenu" class="btn-box">
+        <button onclick="showInputAuth()">📥 Input PDF 📝</button>
+        <button onclick="showViewAuth()">📂 View PDF 🔍</button>
+    </div>
+
+    <div id="inputAuth" class="section">
+        <h3>Enter Admin Password 🔐</h3>
+        <input type="password" id="adminPass" placeholder="Enter Password...">
+        <br>
+        <button onclick="verifyAdmin()">Login 🔑</button>
+    </div>
+
+    <div id="uploadSection" class="section">
+        <h3>Upload Your File 📁</h3>
+        <input type="file" id="pdfFile" accept="application/pdf">
+        <br>
+        <button onclick="saveFile()">Save PDF 💾</button>
+    </div>
+
+    <div id="viewAuth" class="section">
+        <h3>Enter One-Time Access Code 🎫</h3>
+        <input type="password" id="userPass" placeholder="Enter 6-digit Code...">
+        <br>
+        <button onclick="verifyUser()">View 🔓</button>
+    </div>
+
+    <div id="displaySection" class="section">
+        <p class="header-text">✨ TRCS26pdf@Nuri-Defence-TV ✨</p>
+        <iframe id="pdfViewer"></iframe>
+        <br>
+        <button onclick="location.reload()">Back to Home 🏠</button>
+    </div>
+</div>
+
+<script>
+    let savedPDF = null;
+    const adminPass = "trc666";
+    
+    // Generate 500 random passwords (e.g., TRC100 to TRC600)
+    let validPasswords = [];
+    for(let i=100; i<600; i++) {
+        validPasswords.push("TRC" + i);
+    }
+
+    // Logic for sections
+    function showInputAuth() {
+        hideAll();
+        document.getElementById('inputAuth').style.display = 'block';
+    }
+
+    function showViewAuth() {
+        hideAll();
+        document.getElementById('viewAuth').style.display = 'block';
+    }
+
+    function hideAll() {
+        document.querySelectorAll('.section, .btn-box').forEach(el => el.style.display = 'none');
+    }
+
+    // Admin Verification
+    function verifyAdmin() {
+        const pass = document.getElementById('adminPass').value;
+        if(pass === adminPass) {
+            hideAll();
+            document.getElementById('uploadSection').style.display = 'block';
+        } else {
+            alert("❌ Wrong Admin Password!");
+        }
+    }
+
+    // Save PDF logic
+    function saveFile() {
+        const fileInput = document.getElementById('pdfFile');
+        if(fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            savedPDF = URL.createObjectURL(file);
+            alert("✅ PDF Saved Successfully! 📄");
+            location.reload();
+        } else {
+            alert("Please select a file! ⚠️");
+        }
+    }
+
+    // User Verification with One-Time Password
+    function verifyUser() {
+        const pass = document.getElementById('userPass').value;
+        const index = validPasswords.indexOf(pass);
+
+        if(index > -1) {
+            if(!savedPDF) {
+                alert("⚠️ No PDF has been uploaded yet!");
+                return;
+            }
+            // Remove password so it can't be used again
+            validPasswords.splice(index, 1);
+            
+            hideAll();
+            document.getElementById('displaySection').style.display = 'block';
+            document.getElementById('pdfViewer').src = savedPDF;
+        } else {
+            alert("❌ Invalid or Already Used Password!");
+        }
+    }
+</script>
+
+</body>
+</html>
